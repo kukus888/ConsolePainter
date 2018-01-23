@@ -18,6 +18,7 @@ namespace ConsolePainter
 			string[] HlMenuMoznosti = new string[]{
 				"Nový..",
 				"Načíst..",
+				"Vývojářské možnosti",
 				"Konec"
 			};
 
@@ -45,13 +46,19 @@ namespace ConsolePainter
 						Console.CursorVisible = false;
 						ConsoleKeyInfo vstupnacteni = Console.ReadKey ();
 						if (vstupnacteni.Key == ConsoleKey.Enter) {
+							ConsoleColor[] barvy = new ConsoleColor[]{
+								ConsoleColor.Black, ConsoleColor.DarkGray, ConsoleColor.Gray, ConsoleColor.White, ConsoleColor.DarkBlue, ConsoleColor.Blue, ConsoleColor.DarkCyan, ConsoleColor.Cyan, ConsoleColor.DarkGreen, ConsoleColor.Green, ConsoleColor.DarkMagenta, ConsoleColor.Magenta, ConsoleColor.DarkRed, ConsoleColor.Red, ConsoleColor.DarkYellow, ConsoleColor.Yellow
+							};
+							string[] barvyStr = new string[] {
+								"Black","DarkGray","Gray","White","DarkBlue","Blue","DarkCyan","Cyan","DarkGreen","Green","DarkMagenta","Magenta","DarkRed","Red","DarkYellow","Yellow"
+							};
 							StreamReader mapa1 = new StreamReader(cestanac[volbanacteni]);
 							int sirkamapy1 = Int32.Parse(mapa1.ReadLine ());
 							int vyskamapy1 = Int32.Parse(mapa1.ReadLine ());
 							string[,] platno = new string[vyskamapy1,sirkamapy1];
 							ConsoleColor[,] BarvyBack = new ConsoleColor[vyskamapy1,sirkamapy1];
 							ConsoleColor[,] BarvyFore = new ConsoleColor[vyskamapy1,sirkamapy1];
-							for (int x = 0; x <= sirkamapy1; x++) {
+							for (int x = 0; x <= vyskamapy1-1; x++) {
 								string Lajna = mapa1.ReadLine ();
 								if (Lajna == null) {
 									break;
@@ -65,71 +72,26 @@ namespace ConsolePainter
 									}
 								}
 							}
-							for (int x = 0; x <= sirkamapy1 + sirkamapy1; x++) {
+							for (int x = 0; x <= vyskamapy1-1; x++) {
 								string Lajna = mapa1.ReadLine ();
 								if (Lajna == null) {
 									break;
 								}
 								string[] rozdelenalajna = Lajna.Split (',');
 								for (int i = 0; i <= rozdelenalajna.Length-2; i++) {
-									if (rozdelenalajna.ElementAt (i).ToString () == "Red") {
-										BarvyBack [x, i] = ConsoleColor.Red;
-									}
-									if (rozdelenalajna.ElementAt (i).ToString () == "Black") {
-										BarvyBack [x, i] = ConsoleColor.Black;
-									}
-									if (rozdelenalajna.ElementAt (i).ToString () == "Blue") {
-										BarvyBack [x, i] = ConsoleColor.Blue;
-									}
-									if (rozdelenalajna.ElementAt (i).ToString () == "DarkRed") {
-										BarvyBack [x, i] = ConsoleColor.DarkRed;
-									}
-									if (rozdelenalajna.ElementAt (i).ToString () == "DarkBlue") {
-										BarvyBack [x, i] = ConsoleColor.DarkBlue;
-									}
-									if (rozdelenalajna.ElementAt (i).ToString () == "Gray") {
-										BarvyBack [x, i] = ConsoleColor.Gray;
-									}
-									if (rozdelenalajna.ElementAt (i).ToString () == "DarkGray") {
-										BarvyBack [x, i] = ConsoleColor.DarkGray;
-									}
-									if (rozdelenalajna.ElementAt (i).ToString () == "Green") {
-										BarvyBack [x, i] = ConsoleColor.Green;
-									}
+									BarvyBack[x,i] = (ConsoleColor) Enum.Parse(typeof(ConsoleColor), rozdelenalajna.ElementAt (i).ToString ());
 								}
 							}
-							for (int x = 0; x <= sirkamapy1-1; x++) {
+							for (int x = 0; x <= vyskamapy1-1; x++) {
 								string Lajna = mapa1.ReadLine ();
 								if (Lajna == null) {
 									break;
 								}
 								string[] rozdelenalajna = Lajna.Split (',');
 								for (int i = 0; i <= rozdelenalajna.Length-2; i++) {
-									if (rozdelenalajna.ElementAt (i).ToString () == "Red") {
-										BarvyBack [x, i] = ConsoleColor.Red;
-									}
-									if (rozdelenalajna.ElementAt (i).ToString () == "Black") {
-										BarvyBack [x, i] = ConsoleColor.Black;
-									}
-									if (rozdelenalajna.ElementAt (i).ToString () == "Blue") {
-										BarvyBack [x, i] = ConsoleColor.Blue;
-									}
-									if (rozdelenalajna.ElementAt (i).ToString () == "DarkRed") {
-										BarvyBack [x, i] = ConsoleColor.DarkRed;
-									}
-									if (rozdelenalajna.ElementAt (i).ToString () == "DarkBlue") {
-										BarvyBack [x, i] = ConsoleColor.DarkBlue;
-									}
-									if (rozdelenalajna.ElementAt (i).ToString () == "Gray") {
-										BarvyBack [x, i] = ConsoleColor.Gray;
-									}
-									if (rozdelenalajna.ElementAt (i).ToString () == "DarkGray") {
-										BarvyBack [x, i] = ConsoleColor.DarkGray;
-									}
-									if (rozdelenalajna.ElementAt (i).ToString () == "Green") {
-										BarvyBack [x, i] = ConsoleColor.Green;
-									}
+									BarvyFore[x,i] = (ConsoleColor) Enum.Parse(typeof(ConsoleColor), rozdelenalajna.ElementAt (i).ToString ());
 								}
+
 							}
 							mapa1.Close ();
 							Console.Clear ();
@@ -149,12 +111,6 @@ namespace ConsolePainter
 							volbanacteni = cestanac.GetLength (0) - 1;
 						}
 						if (vstupnacteni.Key == ConsoleKey.Escape) {
-							/*platno = new string[32, 16];
-							for (int i = 0; i <= platno.GetLength (0)-1; i++) {
-								for (int x = 0; x <= platno.GetLength (1)-1; x++) {
-									platno [i, x] = null;
-								}
-							}*/
 							nacteni = false;
 							break;
 						}
@@ -162,6 +118,14 @@ namespace ConsolePainter
 				}
 				if (HlMenu == HlMenuMoznosti.GetLength(0)-1) {
 					break;
+				}
+				if (HlMenu == 2) {
+					try{
+					Console.BackgroundColor = (ConsoleColor) Enum.Parse(typeof(ConsoleColor),Console.ReadLine());
+					} catch(System.ArgumentException) {
+						Console.WriteLine ("System.ArgumentException");
+					}
+					Console.ReadKey ();
 				}
 			}
 		}
@@ -278,7 +242,7 @@ namespace ConsolePainter
 					while (true) {
 						int NastrVolba = fce.Menu ("Nástroje", NastrMoznosti);
 						if (NastrVolba == 0) {//Vylit platno
-							bool BufMenit = true;
+							/*bool BufMenit = true;
 							ConsoleColor[] barvy = new ConsoleColor[]{
 								ConsoleColor.Black, ConsoleColor.DarkGray, ConsoleColor.Gray, ConsoleColor.White, ConsoleColor.DarkBlue, ConsoleColor.Blue, ConsoleColor.DarkCyan, ConsoleColor.Cyan, ConsoleColor.DarkGreen, ConsoleColor.Green, ConsoleColor.DarkMagenta, ConsoleColor.Magenta, ConsoleColor.DarkRed, ConsoleColor.Red, ConsoleColor.DarkYellow, ConsoleColor.Yellow
 							};
@@ -357,6 +321,15 @@ namespace ConsolePainter
 								}
 								if (MenitY <= -1) {
 									MenitY++;
+								}
+							}*/
+
+							Barva vylit = VybratBarvu();
+							for (int i = 0; i <= platno.GetLength (0)-1; i++) {
+								for (int x = 0; x <= platno.GetLength (1)-1; x++) {
+									platno[i,x] = vylit.znak;
+									platnoBarvyBack[i,x] = vylit.BackgroundColor;
+									platnoBarvyFore[i,x] = vylit.ForegroundColor;
 								}
 							}
 							Console.BackgroundColor = ConsoleColor.Black;
@@ -513,6 +486,92 @@ namespace ConsolePainter
 					PlatnoY++;
 				}
 			}
+		}
+		public class Barva{
+			public ConsoleColor BackgroundColor{ get; set;}
+			public ConsoleColor ForegroundColor{ get; set;}
+			public string znak{ get; set;}
+		}
+		static public Barva VybratBarvu(){
+			Barva vraceciBarva = new Barva ();
+			bool BufMenit = true;
+			ConsoleColor[] barvy = new ConsoleColor[]{
+				ConsoleColor.Black, ConsoleColor.DarkGray, ConsoleColor.Gray, ConsoleColor.White, ConsoleColor.DarkBlue, ConsoleColor.Blue, ConsoleColor.DarkCyan, ConsoleColor.Cyan, ConsoleColor.DarkGreen, ConsoleColor.Green, ConsoleColor.DarkMagenta, ConsoleColor.Magenta, ConsoleColor.DarkRed, ConsoleColor.Red, ConsoleColor.DarkYellow, ConsoleColor.Yellow
+			};
+			int MenitX = 0;
+			int MenitY = 0;
+			while (BufMenit) {
+				Console.BackgroundColor = ConsoleColor.Black;
+				Console.Clear ();
+				for(int i = 0;i<= barvy.GetLength(0)-1;i++){
+					Console.BackgroundColor = barvy[i];
+					Console.ForegroundColor = ConsoleColor.White;
+					Console.SetCursorPosition (i+1,1);
+					Console.Write(" ");
+					Console.SetCursorPosition (i+1,2);
+					Console.Write("░");
+					Console.SetCursorPosition (i+1,3);
+					Console.Write("▒");
+					Console.SetCursorPosition (i+1,4);
+					Console.Write("▓");
+				}
+				Console.BackgroundColor = ConsoleColor.Black;
+				Console.ForegroundColor = ConsoleColor.White;
+				Console.SetCursorPosition (barvy.GetLength(0)+2,1);
+				Console.Write ("Barva:");
+				Console.SetCursorPosition (1,6);
+				Console.Write ("Potvrdíš [ENTER]");
+				Console.BackgroundColor = barvy[MenitX];
+				Console.ForegroundColor = ConsoleColor.White;
+				for (int a = 0; a <= 3; a++) {
+					Console.SetCursorPosition (barvy.GetLength(0)+2,a+2);
+					if(MenitY == 0){Console.Write ("      ");}
+					if(MenitY == 1){Console.Write ("░░░░░░");}
+					if(MenitY == 2){Console.Write ("▒▒▒▒▒▒");}
+					if(MenitY == 3){Console.Write ("▓▓▓▓▓▓");}
+				}
+				Console.SetCursorPosition (MenitX+1,MenitY+1);
+				ConsoleKeyInfo BufMenitVstup = Console.ReadKey ();
+				if (BufMenitVstup.Key == ConsoleKey.Enter) {
+					string buf = " ";
+					if(MenitY == 0){buf = " ";}
+					if(MenitY == 1){buf = "░";}
+					if(MenitY == 2){buf = "▒";}
+					if(MenitY == 3){buf = "▓";}
+					vraceciBarva.BackgroundColor = barvy [MenitX];
+					vraceciBarva.ForegroundColor = ConsoleColor.White;
+					vraceciBarva.znak = buf;
+					BufMenit = false;
+				}
+				if (BufMenitVstup.Key == ConsoleKey.Escape) {
+					BufMenit = false;
+				}
+				if (BufMenitVstup.Key == ConsoleKey.W || BufMenitVstup.Key == ConsoleKey.UpArrow) {
+					MenitY--;
+				}
+				if (BufMenitVstup.Key == ConsoleKey.A || BufMenitVstup.Key == ConsoleKey.LeftArrow) {
+					MenitX--;
+				}
+				if (BufMenitVstup.Key == ConsoleKey.S || BufMenitVstup.Key == ConsoleKey.DownArrow) {
+					MenitY++;
+				}
+				if (BufMenitVstup.Key == ConsoleKey.D || BufMenitVstup.Key == ConsoleKey.RightArrow) {
+					MenitX++;
+				}
+				if (MenitX <= -1) {
+					MenitX++;
+				}
+				if (MenitX >= barvy.GetLength (0)) {
+					MenitX--;
+				}
+				if (MenitY >= 5) {
+					MenitY--;
+				}
+				if (MenitY <= -1) {
+					MenitY++;
+				}
+			}
+			return vraceciBarva;
 		}
 	}
 }
