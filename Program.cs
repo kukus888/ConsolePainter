@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Threading;
 
 namespace ConsolePainter
 {
@@ -46,12 +47,6 @@ namespace ConsolePainter
 						Console.CursorVisible = false;
 						ConsoleKeyInfo vstupnacteni = Console.ReadKey ();
 						if (vstupnacteni.Key == ConsoleKey.Enter) {
-							ConsoleColor[] barvy = new ConsoleColor[]{
-								ConsoleColor.Black, ConsoleColor.DarkGray, ConsoleColor.Gray, ConsoleColor.White, ConsoleColor.DarkBlue, ConsoleColor.Blue, ConsoleColor.DarkCyan, ConsoleColor.Cyan, ConsoleColor.DarkGreen, ConsoleColor.Green, ConsoleColor.DarkMagenta, ConsoleColor.Magenta, ConsoleColor.DarkRed, ConsoleColor.Red, ConsoleColor.DarkYellow, ConsoleColor.Yellow
-							};
-							string[] barvyStr = new string[] {
-								"Black","DarkGray","Gray","White","DarkBlue","Blue","DarkCyan","Cyan","DarkGreen","Green","DarkMagenta","Magenta","DarkRed","Red","DarkYellow","Yellow"
-							};
 							StreamReader mapa1 = new StreamReader(cestanac[volbanacteni]);
 							int sirkamapy1 = Int32.Parse(mapa1.ReadLine ());
 							int vyskamapy1 = Int32.Parse(mapa1.ReadLine ());
@@ -119,11 +114,53 @@ namespace ConsolePainter
 				if (HlMenu == HlMenuMoznosti.GetLength(0)-1) {
 					break;
 				}
-				if (HlMenu == 2) {
-					try{
-					Console.BackgroundColor = (ConsoleColor) Enum.Parse(typeof(ConsoleColor),Console.ReadLine());
-					} catch(System.ArgumentException) {
-						Console.WriteLine ("System.ArgumentException");
+				if (HlMenu == 2) {//Vyvojarske moznosti
+					Console.ResetColor ();
+					Console.Clear ();
+					ConsoleColor[] barvy = new ConsoleColor[]{
+						ConsoleColor.Black, ConsoleColor.DarkGray, ConsoleColor.Gray, ConsoleColor.White, ConsoleColor.DarkBlue, ConsoleColor.Blue, ConsoleColor.DarkCyan, ConsoleColor.Cyan, ConsoleColor.DarkGreen, ConsoleColor.Green, ConsoleColor.DarkMagenta, ConsoleColor.Magenta, ConsoleColor.DarkRed, ConsoleColor.Red, ConsoleColor.DarkYellow, ConsoleColor.Yellow
+					};
+					for (int i = 0; i <= barvy.GetLength (0) - 1; i++) {
+						Console.BackgroundColor = barvy [i];
+						for (int z = 0; z <= barvy.GetLength (0) - 1; z++) {
+							Console.ForegroundColor = barvy[z];
+							Console.SetCursorPosition (z,i);
+							Console.Write (" ");
+						}
+					}
+					Console.ReadKey ();
+					for (int i = 0; i <= barvy.GetLength (0) - 1; i++) {
+						Console.BackgroundColor = barvy [i];
+						for (int z = 0; z <= barvy.GetLength (0) - 1; z++) {
+							Console.ForegroundColor = barvy[z];
+							Console.SetCursorPosition (z,i);
+							Console.Write ("░");
+						}
+					}
+					Console.ReadKey ();
+					for (int i = 0; i <= barvy.GetLength (0) - 1; i++) {
+						Console.BackgroundColor = barvy [i];
+						for (int z = 0; z <= barvy.GetLength (0) - 1; z++) {
+							Console.ForegroundColor = barvy[z];
+							Console.SetCursorPosition (z,i);
+							Console.Write ("▒");
+						}
+					}
+					Console.ReadKey ();
+					for (int i = 0; i <= barvy.GetLength (0) - 1; i++) {
+						Console.BackgroundColor = barvy [i];
+						for (int z = 0; z <= barvy.GetLength (0) - 1; z++) {
+							Console.ForegroundColor = barvy[z];
+							Console.SetCursorPosition (z,i);
+							Console.Write ("▓");
+						}
+					}
+					Console.ReadKey ();
+					//SINE WAVE
+					for (int X = 0; X <= 666; X++) {
+						Console.SetCursorPosition (1 + X, Int32.Parse (Math.Round(Math.Sin (X)*3).ToString ()) + 8);
+						Console.WriteLine ("X");
+						Thread.Sleep (500);
 					}
 					Console.ReadKey ();
 				}
@@ -451,8 +488,79 @@ namespace ConsolePainter
 							Console.Clear ();
 							string cesta = AppDomain.CurrentDomain.BaseDirectory;
 							string[] soubory = Directory.GetFiles (cesta);
-							int ulo = fce.Menu ("Uložení", soubory);
-							fce.UlozMapu (platno, soubory [ulo],platnoBarvyBack,platnoBarvyFore);
+							string[] vysvetlivkyUlozeni = new string[]{"[Enter] - Přepsat soubor","[N] - Nový soubor"};
+							int volbaUlo = 0;
+							while (true) {
+								soubory = Directory.GetFiles (cesta);
+								Console.Clear ();
+								Console.SetCursorPosition (2,1);
+								Console.Write ("Zvolte soubor k uložení:");
+								for (int i = 0; i <= soubory.GetLength (0) - 1; i++) {
+									Console.SetCursorPosition (2,2+i);
+									if (volbaUlo == i) {
+										Console.Write ("> ");
+									}
+									Console.Write (soubory[i]);
+								}
+								for (int a = 0; a <= vysvetlivkyUlozeni.GetLength (0) - 1; a++) {
+									Console.SetCursorPosition (1,a+soubory.GetLength(0)+3);
+									Console.Write (vysvetlivkyUlozeni[a]);
+								}
+								ConsoleKeyInfo vstupUloz = Console.ReadKey ();
+								if (vstupUloz.Key == ConsoleKey.N) {//New file...
+									Console.Clear();
+									Console.SetCursorPosition (1,1);
+									Console.Write ("Nový soubor");
+									Console.SetCursorPosition (1,2);
+									Console.Write ("Název: ");
+									string newFileName = Console.ReadLine ();
+									string newFileNamePlusPath = cesta + newFileName;
+									if (Directory.Exists (newFileNamePlusPath) || File.Exists (newFileNamePlusPath)) {//already exists
+										Console.Clear();
+										Console.SetCursorPosition (1,1);
+										Console.Write ("Soubor již existuje!");
+										Console.SetCursorPosition (1,2);
+										Console.Write ("Chcete soubor přepsat? Y/n");
+										while (true) {
+											Console.SetCursorPosition (1, 3);
+											ConsoleKeyInfo vstupUlozExist = Console.ReadKey ();
+											if (vstupUlozExist.Key == ConsoleKey.Y) {//overwrite file
+												File.Delete (newFileNamePlusPath);
+												fce.UlozMapu (platno, newFileNamePlusPath, platnoBarvyBack, platnoBarvyFore);
+												break;
+											}
+											if (vstupUlozExist.Key == ConsoleKey.N) {
+												break;
+											}
+										}
+									} else { //doesnt exist
+										fce.UlozMapu (platno, newFileNamePlusPath, platnoBarvyBack, platnoBarvyFore);
+									}
+								}
+								if (vstupUloz.Key == ConsoleKey.W) {
+									volbaUlo--;
+								}
+								if (vstupUloz.Key == ConsoleKey.UpArrow) {
+									volbaUlo--;
+								}
+								if (vstupUloz.Key == ConsoleKey.S) {
+									volbaUlo++;
+								}
+								if (vstupUloz.Key == ConsoleKey.DownArrow) {
+									volbaUlo++;
+								}
+								if (vstupUloz.Key == ConsoleKey.Enter) {
+									File.Delete (soubory [volbaUlo]);
+									fce.UlozMapu (platno, soubory [volbaUlo],platnoBarvyBack,platnoBarvyFore);
+									break;
+								}
+								if (volbaUlo <= -1) {
+									volbaUlo = soubory.GetLength (0)-1;
+								}
+								if (volbaUlo >= soubory.GetLength (0)) {
+									volbaUlo = 0;
+								}
+							}
 						}
 						if (EscMoz == EscMoznosti.GetLength(0)-1) {
 							WhKresli = false;
